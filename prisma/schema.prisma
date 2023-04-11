@@ -1,0 +1,30 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL_NIK")
+}
+
+model Event {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    title        String
+    date         DateTime
+    deleted      Boolean
+    streetName   String
+    streetNumber String
+    postalcode   String
+    city         String
+    country      String?
+    Ticket       Ticket[]
+}
+
+model Ticket {
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    barcode String
+    eventId String @unique @db.ObjectId
+    Event   Event  @relation(fields: [eventId], references: [id])
+    @@unique([eventId, barcode])
+}
